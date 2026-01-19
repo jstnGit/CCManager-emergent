@@ -21,6 +21,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   late TextEditingController _buyerController;
   late DateTime _selectedDate;
   late bool _isPaid;
+  String? _paymentMethod;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
     _selectedDate = widget.expense?.date ?? DateTime.now();
     _isPaid = widget.expense?.isPaid ?? false;
+    _paymentMethod = widget.expense?.paymentMethod;
   }
 
   @override
@@ -71,6 +73,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         buyer: _buyerController.text.trim(),
         date: _selectedDate,
         isPaid: _isPaid,
+        paymentMethod: _isPaid ? _paymentMethod : null, // Only save payment method if paid
       );
 
       if (widget.expense == null) {
@@ -283,6 +286,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       onChanged: (value) {
                         setState(() {
                           _isPaid = value;
+                          if (!value) {
+                            _paymentMethod = null; // Clear payment method if unpaid
+                          }
                         });
                       },
                       activeTrackColor: Colors.green,
@@ -290,6 +296,76 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   ],
                 ),
               ),
+              if (_isPaid) ...[
+                const SizedBox(height: 24),
+                Text(
+                  'Paid Via',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1D1E33),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String?>(
+                      value: _paymentMethod,
+                      isExpanded: true,
+                      hint: Text(
+                        'Select Payment Method',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      dropdownColor: const Color(0xFF1D1E33),
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: 'BPI',
+                          child: Text(
+                            'BPI',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'GCASH',
+                          child: Text(
+                            'GCash',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'MAYA',
+                          child: Text(
+                            'Maya',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'CASH',
+                          child: Text(
+                            'Cash',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'OTHER',
+                          child: Text(
+                            'Other',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _paymentMethod = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,

@@ -4,12 +4,20 @@ import '../models/credit_card_model.dart';
 import '../services/database_service.dart';
 
 class CreditCardProvider extends ChangeNotifier {
-  late Box<CreditCardModel> _creditCardBox;
+  Box<CreditCardModel>? _creditCardBox;
   CreditCardModel? _creditCard;
 
   CreditCardProvider() {
-    _creditCardBox = DatabaseService.getCreditCardBox();
-    _loadCreditCard();
+    _init();
+  }
+
+  void _init() {
+    try {
+      _creditCardBox = DatabaseService.getCreditCardBox();
+      _loadCreditCard();
+    } catch (e) {
+      debugPrint('Error initializing CreditCardProvider: $e');
+    }
   }
 
   CreditCardModel get creditCard {
@@ -25,20 +33,24 @@ class CreditCardProvider extends ChangeNotifier {
   }
 
   void _loadCreditCard() {
-    if (_creditCardBox.isNotEmpty) {
-      _creditCard = _creditCardBox.getAt(0);
+    if (_creditCardBox == null) return;
+    
+    if (_creditCardBox!.isNotEmpty) {
+      _creditCard = _creditCardBox!.getAt(0);
+      debugPrint('Loaded credit card: Limit ${_creditCard?.creditLimit}');
     }
     notifyListeners();
   }
 
   Future<void> _saveCreditCard() async {
-    if (_creditCard != null) {
-      if (_creditCardBox.isEmpty) {
-        await _creditCardBox.add(_creditCard!);
-      } else {
-        await _creditCardBox.putAt(0, _creditCard!);
-      }
+    if (_creditCardBox == null || _creditCard == null) return;
+    
+    if (_creditCardBox!.isEmpty) {
+      await _creditCardBox!.add(_creditCard!);
+    } else {
+      await _creditCardBox!.putAt(0, _creditCard!);
     }
+    debugPrint('Saved credit card: Limit ${_creditCard?.creditLimit}');
   }
 
   Future<void> updateCreditLimit(double limit) async {

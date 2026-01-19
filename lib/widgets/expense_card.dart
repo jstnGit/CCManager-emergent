@@ -105,6 +105,16 @@ class ExpenseCard extends StatelessWidget {
                           ),
                     ),
                   ),
+                  if (expense.isPaid && expense.paymentMethod != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      _getPaymentMethodName(expense.paymentMethod!),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.blue[300],
+                            fontSize: 11,
+                          ),
+                    ),
+                  ],
                 ],
               ),
             ],
@@ -112,5 +122,22 @@ class ExpenseCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getPaymentMethodName(String method) {
+    switch (method) {
+      case 'BPI':
+        return 'via BPI';
+      case 'GCASH':
+        return 'via GCash';
+      case 'MAYA':
+        return 'via Maya';
+      case 'CASH':
+        return 'via Cash';
+      case 'OTHER':
+        return 'via Other';
+      default:
+        return 'via $method';
+    }
   }
 }

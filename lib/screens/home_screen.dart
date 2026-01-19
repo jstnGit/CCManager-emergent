@@ -4,6 +4,7 @@ import '../providers/expense_provider.dart';
 import '../widgets/credit_card_summary.dart';
 import '../widgets/expense_list.dart';
 import 'add_expense_screen.dart';
+import 'history_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -33,6 +34,18 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const HistoryScreen(),
+                ),
+              );
+            },
+            tooltip: 'View History',
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: Icon(

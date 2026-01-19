@@ -22,6 +22,15 @@ class ExpenseModel extends HiveObject {
   @HiveField(5)
   bool isPaid;
 
+  @HiveField(6)
+  String? paymentMethod; // BPI, GCASH, MAYA, CASH, OTHER (removed CREDIT_CARD)
+
+  @HiveField(7)
+  bool isArchived; // Moved to history after credit card payment
+
+  @HiveField(8)
+  DateTime? archivedDate; // When it was moved to history
+
   ExpenseModel({
     required this.id,
     required this.description,
@@ -29,6 +38,9 @@ class ExpenseModel extends HiveObject {
     required this.buyer,
     required this.date,
     this.isPaid = false,
+    this.paymentMethod,
+    this.isArchived = false,
+    this.archivedDate,
   });
 
   ExpenseModel copyWith({
@@ -38,6 +50,9 @@ class ExpenseModel extends HiveObject {
     String? buyer,
     DateTime? date,
     bool? isPaid,
+    String? paymentMethod,
+    bool? isArchived,
+    DateTime? archivedDate,
   }) {
     return ExpenseModel(
       id: id ?? this.id,
@@ -46,6 +61,9 @@ class ExpenseModel extends HiveObject {
       buyer: buyer ?? this.buyer,
       date: date ?? this.date,
       isPaid: isPaid ?? this.isPaid,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      isArchived: isArchived ?? this.isArchived,
+      archivedDate: archivedDate ?? this.archivedDate,
     );
   }
 }
